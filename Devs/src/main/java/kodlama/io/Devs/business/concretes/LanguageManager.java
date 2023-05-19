@@ -1,11 +1,16 @@
 package kodlama.io.Devs.business.concretes;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlama.io.Devs.business.abstracts.LanguageService;
+import kodlama.io.Devs.business.requests.languageChildRequest.UpdateLanguageChildReqest;
+import kodlama.io.Devs.business.requests.languageRequest.CreateLanguageRequest;
+import kodlama.io.Devs.business.requests.languageRequest.UpdateLanguageRequest;
+import kodlama.io.Devs.business.responses.languageResponse.GetAllLanguageResponse;
 import kodlama.io.Devs.dataAccess.abstracts.LanguageRepository;
 import kodlama.io.Devs.entities.concretes.Language;
 
@@ -18,58 +23,45 @@ public class LanguageManager implements LanguageService {
     @Autowired
     public LanguageManager(LanguageRepository languageRepository) {
         this.languageRepository = languageRepository;
-        this.languages=languageRepository.getAll();
+        this.languages=languageRepository.findAll();
+    }
+
+    @Override
+    public void add(CreateLanguageRequest request) {
+        Language lng= new Language();
+        lng.setName(request.getName());
+        this.languageRepository.save(lng);
+    }
+
+    @Override
+    public void update(UpdateLanguageRequest request, UpdateLanguageChildReqest childRequest) {
+        Language lng= new Language();
+        Optional<Language> optional=this.languageRepository.findById(request.getId());
+
+        
+    }
+
+    @Override
+    public void remove(int id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+    }
+
+    @Override
+    public GetAllLanguageResponse getById(int id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getById'");
+    }
+
+    @Override
+    public List<GetAllLanguageResponse> getAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
     }
 
     
 
-    @Override
-    public boolean add(Language language) {
-        if(!(language.getName()==null)){
-            for (Language lng : languages) {
-                if (!(lng.getName()==language.getName())) {
-                    languageRepository.add(language);
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean update(Language language) {
-        if(!(language.getName()==null)){
-            for (Language lng : languages) {
-                if (language.getId()==lng.getId()) {
-                    int index =languages.indexOf(lng);
-                    languageRepository.update(language, index);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean remove(int id) {
-        for (Language lng : languages) {
-            if (lng.getId()==id) {
-                int index=languages.indexOf(lng);
-                languageRepository.remove(index);
-
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Language getById(int id) {
-        return languageRepository.getById(id);
-    }
-
-    @Override
-    public List<Language> getAll() {
-        return languageRepository.getAll();
-    }
+    
 
     
 }

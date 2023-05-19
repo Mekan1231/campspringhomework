@@ -1,43 +1,43 @@
 package kodlama.io.Devs.entities.concretes;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
+import javax.annotation.Generated;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "languages")
+@Table(name="languageChild")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Language {
+public class LanguageChild {
+    
+    @Column(name="name")
+    private String name;
 
     
     @Id
+    @Column(name="childId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    private int  childId;
 
-    @Column(name = "name")
-    private String name;
-
-    @OneToMany(mappedBy = "language", cascade = CascadeType.ALL)
-    private List<LanguageChild> languageChild;
-
+    @ManyToOne
+    @JoinColumn(name = "languageId")
+    private Language language;
     
     
-   
+    
     
 }
