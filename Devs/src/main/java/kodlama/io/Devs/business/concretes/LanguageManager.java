@@ -1,29 +1,32 @@
 package kodlama.io.Devs.business.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlama.io.Devs.business.abstracts.LanguageService;
-import kodlama.io.Devs.business.requests.languageChildRequest.UpdateLanguageChildReqest;
 import kodlama.io.Devs.business.requests.languageRequest.CreateLanguageRequest;
 import kodlama.io.Devs.business.requests.languageRequest.UpdateLanguageRequest;
 import kodlama.io.Devs.business.responses.languageResponse.GetAllLanguageResponse;
+import kodlama.io.Devs.dataAccess.abstracts.LanguageChildRepository;
 import kodlama.io.Devs.dataAccess.abstracts.LanguageRepository;
 import kodlama.io.Devs.entities.concretes.Language;
+import kodlama.io.Devs.entities.concretes.LanguageChild;
 
 @Service
 public class LanguageManager implements LanguageService {
 
     LanguageRepository  languageRepository;
-    List<Language> languages;
+    LanguageChildRepository childRepository;
+    
+    
     
     @Autowired
-    public LanguageManager(LanguageRepository languageRepository) {
+    public LanguageManager(LanguageRepository languageRepository, LanguageChildRepository childRepository) {
         this.languageRepository = languageRepository;
-        this.languages=languageRepository.findAll();
+        this.childRepository=childRepository;
+        
     }
 
     @Override
@@ -34,29 +37,53 @@ public class LanguageManager implements LanguageService {
     }
 
     @Override
-    public void update(UpdateLanguageRequest request, UpdateLanguageChildReqest childRequest) {
+    public void update(UpdateLanguageRequest request) {
         Language lng= new Language();
-        Optional<Language> optional=this.languageRepository.findById(request.getId());
+        lng=this.languageRepository.findById(request.getId()).get();
+        lng.setName(request.getName());
+        
+        this.languageRepository.saveAndFlush(lng);
 
         
     }
 
     @Override
     public void remove(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        this.languageRepository.deleteById(id);
     }
 
     @Override
     public GetAllLanguageResponse getById(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getById'");
+        Language language= this.languageRepository.findById(id).orElse(null);
+        GetAllLanguageResponse response = new GetAllLanguageResponse();
+        List<String> childNames= new ArrayList<String>();
+        for (LanguageChild child : language.getLanguageChild()) {
+            childNames.add(child.getName());
+        }
+        response.setId(language.getId());
+        response.setName(language.getName());
+        response.setChildName(childNames);
+        return response;
     }
 
     @Override
     public List<GetAllLanguageResponse> getAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
+        List<Language> languages=this.languageRepository.findAll();
+        
+        List<GetAllLanguageResponse> responses= new ArrayList<GetAllLanguageResponse>();
+        for (Language language : languages) {
+            List<String> childNames= new ArrayList<String>();
+            for (LanguageChild child  : language.getLanguageChild()) {
+                childNames.add(child.getName());
+            }
+            GetAllLanguageResponse response = new GetAllLanguageResponse();
+            response.setId(language.getId());
+            response.setName(language.getName());
+            response.setChildName(childNames);
+            responses.add(response);
+        }
+
+        return responses;
     }
 
     
