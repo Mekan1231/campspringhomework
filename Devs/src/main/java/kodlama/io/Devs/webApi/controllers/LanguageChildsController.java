@@ -3,8 +3,11 @@ package kodlama.io.Devs.webApi.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +15,7 @@ import kodlama.io.Devs.business.abstracts.LanguageChildService;
 import kodlama.io.Devs.business.requests.languageChildRequest.CreateLanguageChildRequest;
 import kodlama.io.Devs.business.requests.languageChildRequest.UpdateLanguageChildReqest;
 import kodlama.io.Devs.business.responses.languageChildResponse.GetAllLanguageChildResponse;
+import kodlama.io.Devs.business.responses.languageChildResponse.GetByIdLanguageChildResponse;
 
 @RestController
 @RequestMapping("/api/languageChilds")
@@ -27,28 +31,28 @@ public class LanguageChildsController {
 
 
 
-    @PostMapping("/add")
+    @PostMapping()
     public void add(CreateLanguageChildRequest request) {
         childService.add(request);
         
     }
 
-    @PostMapping("/update")
+    @PutMapping()
     public void update(UpdateLanguageChildReqest childReqest) {
         childService.update(childReqest);
     }
 
-    @PostMapping("/remove")
-    public void remove(int id) {
+    @DeleteMapping("/{id}")
+    public void remove(@PathVariable int id) {
         childService.remove(id);
     }
 
-    @GetMapping("/getbyid")
-    public GetAllLanguageChildResponse getById(int id) throws Exception {
+    @GetMapping("/{id}")
+    public GetByIdLanguageChildResponse getById(int id) throws Exception {
         return childService.getById(id);
     }
 
-    @GetMapping("/getall")
+    @GetMapping()
     public List<GetAllLanguageChildResponse> getAll() {
         return childService.getAll();
     }
